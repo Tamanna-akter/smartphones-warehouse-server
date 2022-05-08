@@ -32,7 +32,7 @@ async function run() {
             res.send(phones);
         });
 
-        // GET single service API using dynamic id
+        // GET single item API using dynamic id
         app.get('/phoneDetails/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -43,9 +43,17 @@ async function run() {
         // Add Orders API
         app.post('/phones', async (req, res) => {
             const newPhone = req.body;
-            const result = await phoneDetails.insertOne(newPhone);
+            const result = await phoneCollections.insertOne(newPhone);
             res.send(result);
         });
+
+         //DELETE
+        app.delete("/phones/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await phoneCollections.deleteOne(query);
+        res.send(result);
+      });
 
     }
     finally{

@@ -39,9 +39,8 @@ async function run() {
             const phone = await phoneCollections.findOne(query);
             res.send(phone);
         })
-         //POST API
-        // Add Orders API
-        app.post('/phones', async (req, res) => {
+        // Add item API
+        app.post('/addPhones', async (req, res) => {
             const newPhone = req.body;
             const result = await phoneCollections.insertOne(newPhone);
             res.send(result);

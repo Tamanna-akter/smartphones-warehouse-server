@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
@@ -22,13 +22,31 @@ async function run() {
      console.log('connected');
         const phoneCollections = client.db('smartphonesWarehouse').collection('phones');
 
+        // const phoneDetails  = database.collection('details');
 
-        app.get('/phone', async (req, res) => {
+
+        app.get('/phones', async (req, res) => {
             const query = {};
             const cursor = phoneCollections.find(query);
             const phones = await cursor.toArray();
             res.send(phones);
         });
+
+        // GET single service API using dynamic id
+        app.get('/phoneDetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const phone = await phoneCollections.findOne(query);
+            res.send(phone);
+        })
+         //POST API
+        // Add Orders API
+        app.post('/phones', async (req, res) => {
+            const newPhone = req.body;
+            const result = await phoneDetails.insertOne(newPhone);
+            res.send(result);
+        });
+
     }
     finally{
 

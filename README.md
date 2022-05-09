@@ -3,7 +3,7 @@
 
 ## Server side
 
-Live Site Link: 
+Live Site Link: https://smartphones-warehouse.web.app/
 
 ### Technologies for Fron-end (framework/library) 
 * HTML, CSS

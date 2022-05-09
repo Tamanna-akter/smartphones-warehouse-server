@@ -40,11 +40,12 @@ async function run() {
             res.send(phone);
         })
         // Add item API
-        app.post('/addPhones', async (req, res) => {
+        app.post('/phones', async (req, res) => {
             const newPhone = req.body;
             const result = await phoneCollections.insertOne(newPhone);
             res.send(result);
         });
+
 
          //DELETE
         app.delete("/phones/:id", async (req, res) => {
@@ -53,6 +54,29 @@ async function run() {
         const result = await phoneCollections.deleteOne(query);
         res.send(result);
       });
+
+        //PUT
+    app.put("/phones/:id", async (req, res) => {
+        const id = req.params.id;
+        const updatedQuantity = req.body;
+        const filter = { _id: ObjectId(id) };
+        console.log(updatedQuantity);
+        const updatedDoc = {
+          $set: {
+            quantity: updatedQuantity.quantity,
+            // about: updatedService.about,
+          },
+        };
+  
+        const options = { upsert: true };
+        const result = await phoneCollections.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+        res.send(result);
+      });
+  
 
     }
     finally{

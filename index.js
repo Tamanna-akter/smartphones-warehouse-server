@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt =require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
@@ -21,15 +22,15 @@ async function run() {
         await client.connect();
      console.log('connected');
         const phoneCollections = client.db('smartphonesWarehouse').collection('phones');
+        const addItemCollection=client.db('newItemCollections').collection('newItem');
 
-        // const phoneDetails  = database.collection('details');
 
 
         app.get('/phones', async (req, res) => {
             const query = {};
             const cursor = phoneCollections.find(query);
-            const phones = await cursor.toArray();
-            res.send(phones);
+            const result = await cursor.toArray();
+            res.send(result);
         });
 
         // GET single item API using dynamic id
@@ -43,8 +44,18 @@ async function run() {
         app.post('/phones', async (req, res) => {
             const newPhone = req.body;
             const result = await phoneCollections.insertOne(newPhone);
+            // console.log(result);
             res.send(result);
         });
+       
+    //JWT
+    app.post('/login', async (req, res) => {
+      const user = req.body;
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN, {
+          expiresIn: '1d'
+      });
+      res.send({ accessToken });
+  })
 
 
          //DELETE
@@ -74,6 +85,20 @@ async function run() {
           updatedDoc,
           options
         );
+        res.send(result);
+      });
+
+      app.get("/addItem", async (req, res) => {
+        const email = req.query.email;
+        const query = { email: email };
+        const cursor = await addItemCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+  
+      app.post("/addItem", async (req, res) => {
+        const item = req.body;
+        const result = await addItemCollection.insertOne(item);
         res.send(result);
       });
   
